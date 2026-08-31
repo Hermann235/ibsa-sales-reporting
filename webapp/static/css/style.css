@@ -1,0 +1,69 @@
+:root {
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f5f7fb;
+  color: #1f2937;
+}
+
+header {
+  padding: 24px 32px;
+  background: #111827;
+  color: white;
+}
+
+header h1 { margin: 0 0 4px; font-size: 1.5rem; }
+.subtitle { margin: 0; color: #9ca3af; font-size: 0.9rem; }
+.freshness-banner { margin: 8px 0 0; color: #e5e7eb; font-size: 0.85rem; font-weight: 600; }
+
+.header-brand { display: flex; align-items: center; gap: 16px; }
+.ibsa-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  color: #7a1128;
+  background: #ffffff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 2px solid #7a1128;
+  flex-shrink: 0;
+}
+
+main { padding: 24px 32px; display: flex; flex-direction: column; gap: 24px; }
+
+.kpi-grid, .tables {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.kpi-grid { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+.card-wide { min-height: 320px; }
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 { margin-top: 0; font-size: 1rem; color: #374151; }
+
+.stat-card { display: flex; flex-direction: column; justify-content: center; min-height: 140px; }
+.stat-value { font-size: 3rem; font-weight: 700; color: #111827; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat-caption { margin: 8px 0 0; color: #6b7280; font-size: 0.85rem; }
+
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #e5e7eb; }
+th { color: #6b7280; font-weight: 600; }
+
+.empty-state { display: none; color: #9ca3af; font-style: italic; }

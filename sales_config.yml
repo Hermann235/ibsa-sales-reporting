@@ -1,0 +1,162 @@
+# Data contract Bronze -> Silver.
+#
+# Definisce, colonna per colonna, come il livello silver costruisce silver.sales a
+# partire da bronze.sales_raw: nome sorgente/target, tabella sorgente/target, tipo
+# dato di destinazione, se la colonna fa parte della chiave primaria di silver.sales
+# e quale regola di normalizzazione applicare (vedi TRANSFORMS in
+# src/pipeline/bronze_2_silver.py per l'elenco delle regole disponibili: none, upper, cast_int, cast_float,
+# category_code_to_label).
+#
+# File modificabile a mano: aggiungere/rimuovere una colonna, cambiarne il tipo o la
+# chiave primaria qui si riflette automaticamente su cfg_bronze_column,
+# cfg_silver_mapping e cfg_dedup_key al prossimo bootstrap di meta.db (serve un reset
+# della demo con scripts/reset_demo.py perche' i cambi di schema abbiano effetto sui
+# database gia' creati).
+
+dedup_order_by: ingested_at_utc
+
+columns:
+  - source_table: sales_raw
+    source_column: transaction_id
+    target_table: sales
+    target_column: transaction_id
+    data_type: TEXT
+    primary_key: true
+    transform: none
+
+  - source_table: sales_raw
+    source_column: order_datetime_utc
+    target_table: sales
+    target_column: order_datetime_utc
+    data_type: TEXT
+    primary_key: false
+    transform: none
+
+  - source_table: sales_raw
+    source_column: ingested_at_utc
+    target_table: sales
+    target_column: ingested_at_utc
+    data_type: TEXT
+    primary_key: false
+    transform: none
+
+  - source_table: sales_raw
+    source_column: country
+    target_table: sales
+    target_column: country
+    data_type: TEXT
+    primary_key: false
+    transform: upper
+
+  - source_table: sales_raw
+    source_column: source_system
+    target_table: sales
+    target_column: source_system
+    data_type: TEXT
+    primary_key: false
+    transform: none
+
+  - source_table: sales_raw
+    source_column: source_scenario
+    target_table: sales
+    target_column: source_scenario
+    data_type: TEXT
+    primary_key: false
+    transform: upper
+
+  - source_table: sales_raw
+    source_column: product_code
+    target_table: sales
+    target_column: product_code
+    data_type: TEXT
+    primary_key: false
+    transform: none
+
+  - source_table: sales_raw
+    source_column: product_name
+    target_table: sales
+    target_column: product_name
+    data_type: TEXT
+    primary_key: false
+    transform: none
+
+  - source_table: sales_raw
+    source_column: product_category
+    target_table: sales
+    target_column: product_category
+    data_type: TEXT
+    primary_key: false
+    transform: none
+
+  - source_table: sales_raw
+    source_column: brand
+    target_table: sales
+    target_column: brand
+    data_type: TEXT
+    primary_key: false
+    transform: none
+
+  - source_table: sales_raw
+    source_column: sales_channel
+    target_table: sales
+    target_column: sales_channel
+    data_type: TEXT
+    primary_key: false
+    transform: none
+
+  - source_table: sales_raw
+    source_column: quantity
+    target_table: sales
+    target_column: quantity
+    data_type: INTEGER
+    primary_key: false
+    transform: cast_int
+
+  - source_table: sales_raw
+    source_column: unit_price
+    target_table: sales
+    target_column: unit_price
+    data_type: REAL
+    primary_key: false
+    transform: cast_float
+
+  - source_table: sales_raw
+    source_column: currency
+    target_table: sales
+    target_column: currency
+    data_type: TEXT
+    primary_key: false
+    transform: upper
+
+  - source_table: sales_raw
+    source_column: discount_pct
+    target_table: sales
+    target_column: discount_pct
+    data_type: REAL
+    primary_key: false
+    transform: cast_float
+
+  - source_table: sales_raw
+    source_column: gross_amount
+    target_table: sales
+    target_column: gross_amount
+    data_type: REAL
+    primary_key: false
+    transform: cast_float
+
+  - source_table: sales_raw
+    source_column: net_amount
+    target_table: sales
+    target_column: net_amount
+    data_type: REAL
+    primary_key: false
+    transform: cast_float
+
+# Eccezioni per singola sorgente: sovrascrivono la "transform" della colonna sopra
+# solo per il source_id indicato. Usato dallo scenario C (altro ERP, Cina), che manda
+# product_category come codice abbreviato (RX/OTC/MD/AES/SUP) invece dell'etichetta
+# estesa.
+source_overrides:
+  - source_id: 3
+    column: product_category
+    transform: category_code_to_label
